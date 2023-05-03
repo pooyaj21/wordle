@@ -16,7 +16,7 @@ String[] words = new String[14855];
 String vKeyBoardS[] = {"Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "A", "S", "D", "F", "G", "H", "J", "K", "L", "Z", "X", "C", "V", "B", "N", "M"};
 char vKeyBoardC[] = {'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Z', 'X', 'C', 'V', 'B', 'N', 'M'};
 String outputv [] =new String[26];
-
+boolean empty [] = new boolean[26];
 
 
 
@@ -104,7 +104,6 @@ void keyPressed() {
 
     y=0;
     if (x<4)x++;
-    println(outputv);
   }
 
   if ( keyPressed && key == BACKSPACE && y>0) {
@@ -298,31 +297,24 @@ char[] answerChecker(String input3, String answer, char[] output) {
     alphabet[(ascii - 97)]++; //for how many of how many char we have
   }
 
-  for (int i = 0; i < answer.length(); i++) {
+for (int i = 0; i < answer.length(); i++) {
     if (input.charAt(i) == answer.charAt(i)) {
-
-  
       fill(83, 141, 78, 255);
       rect((width/(wordSize+2)) * (i+1), (((height/8)*6.5)/(wordSize+2)) * (x+1), width/grid, width/grid, 15);
       textAlign(CENTER, CENTER);
       textSize(50);
       fill(255);
       text(input2[i].toUpperCase(), (width/grid) * (i+1) + width/grid/2, (((height/8)*6.5)/grid) * (x+1)   + width/grid/2);
-
       output[i] = 't';
-
-   
-
-
       alphabet[(input.charAt(i) - 97)]--;
-            
-  for (int g = 0; g < 26; g++) {
-        if (vKeyBoardC[g] == input.charAt(i)) {
-          outputv[g]="T";
+      
+      for (int g = 0; g < 26; g++) {
+        if (input2[i].toUpperCase().equals(vKeyBoardS[g])) {
+          outputv[g]= "T";
+          empty[g]=true;
         }
-       }
-       
-       
+      }    
+          
     } else {
       output[i] = 'f';
 
@@ -333,8 +325,10 @@ char[] answerChecker(String input3, String answer, char[] output) {
       fill(255);
       text(input2[i].toUpperCase(), (width/grid) * (i+1) + width/grid/2, (((height/8)*6.5)/grid) * (x+1)   + width/grid/2);
     }
+
+
     for (int h = 0; h < 26; h++) {
-      if (vKeyBoardS[h]==input2[i].toUpperCase()) {
+      if (input2[i].toUpperCase().equals(vKeyBoardS[h]) && !empty[h] ) {
         outputv[h]="F";
       }
     }
@@ -352,9 +346,11 @@ char[] answerChecker(String input3, String answer, char[] output) {
           fill(255);
           text(input2[k].toUpperCase(), (width/grid) * (k+1) + width/grid/2, (((height/8)*6.5)/grid) * (x+1)   + width/grid/2);
           output[k] = '!';
+          
           for (int i = 0; i < 26; i++) {
-            if (vKeyBoardS[i] == input2[k].toUpperCase()) {
+            if (input2[k].toUpperCase().equals(vKeyBoardS[i]) && !empty[i]) {
               outputv[i]="W";
+              empty[i]=true;
             }
           }
 
