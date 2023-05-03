@@ -192,7 +192,6 @@ void virtualKeyBoardchanges() {
 
 
 
-
 String numberSelector(String[] words) {
   Random random = new Random();
   int luckyNumber = random.nextInt(words.length);
@@ -258,8 +257,8 @@ char[] answerChecker(String input3, String answer, char[] output) {
           fill(0);
           text(input2[k].toUpperCase(), (width/grid) * (k+1) + width/grid/2, (((height/8)*6.5)/grid) * (x+1)   + width/grid/2);
           output[k] = '!';
-          for (int i = 1; i < 28; i++) {
-            if (vKeyBoard[i]==input2[i].toUpperCase() && outputW[i]== false) {
+          for (int i = 0; i < 27; i++) {
+            if (vKeyBoard[i]==input2[k].toUpperCase() && outputW[i]== false) {
               outputW[i]=true;
             }
           }
