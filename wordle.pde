@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Locale;
 import java.util.Random;
 import java.util.Scanner;
+BufferedReader reader;
 int wordSize=5;
 int gridSize = width/(wordSize+2);
 int grid = wordSize+2;
@@ -15,20 +16,30 @@ String[] words = new String[14855];
 
 
 final int MAX_TURN = 5;
-String answer = numberSelector(words);//generate a word
+String answer ;
 int turn =0;
 
 void setup() {
   size(900, 900);
-  Scanner scanner = new Scanner(new File("words.txt"));
-  int i = 0;
-  while (scanner.hasNextLine()) {
-    words[i++] = scanner.nextLine();
+  reader = createReader("words.txt");
+  String line = null;
+  try {
+    int i = 0;
+    while ((line = reader.readLine()) != null) {
+      words[i++] = line;
+    }
   }
-  scanner.close();
+  catch (IOException e) {
+    e.printStackTrace();
+  }
+
+
+  answer = numberSelector(words); //generate a word
+
 
   System.out.println(answer); //test
 }
+
 void draw() {
   rectDraw();
 }
@@ -45,19 +56,20 @@ void rectDraw() {
 }
 
 void keyTyped() {
-  if (key >= 'a' && key <= 'z') {
-    input[x][y] = Character.toString(key);
+  if (key >= 'a' && key <= 'z'&& y<5) {
+    
     input2[y] =Character.toString(key);
     fill(255);
     rect((width/(wordSize+2)) * (y+1), (height/(wordSize+2)) * (x+1), height/grid, width/grid, 15);
     textAlign(CENTER, CENTER);
     fill(0);
-    text(input[x][y], (width/grid) * (y+1) + width/grid/2, (height/grid) * (x+1)   + height/grid/2);
+    text(input2 [y], (width/grid) * (y+1) + width/grid/2, (height/grid) * (x+1)   + height/grid/2);
 
-    if (y<4) {
+    if (y<5) {
       y++;
     }
   }
+
   //if (key >= 'A' && key <= 'Z') {
   //  input[x][y] = Character.toString(key);
   //  fill(255);
@@ -73,10 +85,16 @@ void keyTyped() {
 }
 
 void keyPressed() {
-  if ( keyPressed && key == ENTER) {
+  if ( keyPressed && key == ENTER & y==5) {
     logic();
     y=0;
     x++;
+  }
+
+  if ( keyPressed && key == BACKSPACE && y>0) {
+    y--;
+    fill(255);
+    rect((width/(wordSize+2)) * (y+1), (height/(wordSize+2)) * (x+1), height/grid, width/grid, 15);
   }
 }
 
