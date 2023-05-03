@@ -13,10 +13,12 @@ String[] input2= new String[5];
 int x =0;
 int y =0;
 String[] words = new String[14855];
-String vKeyBoard[] = {"Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "A", "S", "D", "F", "G", "H", "J", "K", "L", "Z", "X", "C", "V", "B", "N", "M", "\b"};
-boolean outputT [] =new boolean[27];
-boolean outputF [] =new boolean[27];
-boolean outputW [] =new boolean[27];
+String vKeyBoardS[] = {"Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "A", "S", "D", "F", "G", "H", "J", "K", "L", "Z", "X", "C", "V", "B", "N", "M"};
+char vKeyBoardC[] = {'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Z', 'X', 'C', 'V', 'B', 'N', 'M'};
+String outputv [] =new String[26];
+
+
+
 
 
 final int MAX_TURN = 5;
@@ -24,8 +26,11 @@ String answer ;
 int turn =0;
 
 void setup() {
-  size(800, 1000);
+  size(700, 900);
   background(18, 18, 19, 255);
+  textAlign(CENTER, CENTER);
+  textSize(50);
+  text("Wordle", width/2, height/24);
   reader = createReader("words.txt");
   String line = null;
   try {
@@ -76,7 +81,7 @@ void keyTyped() {
     }
   }
 
-  if (key >= 'A' && key <= 'Z') {
+  if (key >= 'A' && key <= 'Z'&& y<5) {
     input2[y] =Character.toString(key);
     fill(18, 18, 19, 255);
     rect((width/(wordSize+2)) * (y+1), (((height/8)*6.5)/(wordSize+2)) * (x+1), width/grid, width/grid, 15);
@@ -93,12 +98,13 @@ void keyTyped() {
 }
 
 void keyPressed() {
-  if ( keyPressed && key == ENTER & y==5) {
+  if ( keyPressed && key == ENTER && y==5) {
     logic();
     virtualKeyBoardchanges();
 
     y=0;
     if (x<4)x++;
+    println(outputv);
   }
 
   if ( keyPressed && key == BACKSPACE && y>0) {
@@ -107,6 +113,57 @@ void keyPressed() {
     rect((width/(wordSize+2)) * (y+1), (((height/8)*6.5)/(wordSize+2)) * (x+1), width/grid, width/grid, 15);
   }
 }
+
+void mousePressed() {
+  float xStart = (width - ((width / 4) * 2.3)) / 2;
+  int yStart = height - ((height / 8) * 2);
+  for (int i = 0; i < 26; i++) {
+    // calculate the x and y coordinates of the current key
+    int j;
+    float k;
+    if (i <= 9) { // first row
+      j = 1;
+      k = i;
+    } else if (i <= 18) { // second row
+      j = 2;
+      k = i - 9.5;
+    } else { // third row
+      j = 3;
+      k = i - 17.5;
+    }
+    float keyX = xStart + (((width / 4) * 2 / 9) * k);
+    float keyY = yStart + (((height / 8) * 3 / 9) * j);
+
+    if (mouseX > keyX && mouseX < keyX + 35 && mouseY > keyY && mouseY < keyY + 30 && y<5) {
+      input2[y] =vKeyBoardS[i];
+      fill(18, 18, 19, 255);
+      rect((width/(wordSize+2)) * (y+1), (((height/8)*6.5)/(wordSize+2)) * (x+1), width/grid, width/grid, 15);
+
+      textAlign(CENTER, CENTER);
+      textSize(50);
+      fill(255);
+      text(input2 [y], (width/grid) * (y+1) + width/grid/2, (((height/8)*6.5)/grid) * (x+1)   + width/grid/2);
+
+      if (y<5) {
+        y++;
+      }
+    }
+  }
+  if (mouseX> xStart + (((width / 4) * 2 / 9) * -0.5) && mouseX< xStart + (((width / 4) * 2 / 9) * -0.5)+70 && mouseY>yStart + (((height / 8) * 2.8 / 9) * 3) + 30/2 + 2 && mouseY<yStart + (((height / 8) * 2.8 / 9) * 3) + 30/2 + 32 && y==5) {
+    logic();
+    virtualKeyBoardchanges();
+
+    y=0;
+    if (x<4)x++;
+  }
+
+  if (mouseX> xStart + (((width / 4) * 2 / 9) * 8.5) && mouseX< xStart + (((width / 4) * 2 / 9) * 8.5)+70 && mouseY>yStart + (((height / 8) * 3 / 9) * 3) && mouseY<yStart + (((height / 8) * 3 / 9) * 3) + 32&& y>0) {
+    y--;
+    fill(18, 18, 19, 255);
+    rect((width/(wordSize+2)) * (y+1), (((height/8)*6.5)/(wordSize+2)) * (x+1), width/grid, width/grid, 15);
+  }
+}
+
 
 void logic() {
 
@@ -139,16 +196,40 @@ void logic() {
 void virtualKeyBoard() {
   float xStart = (width - ((width / 4) * 2.3)) / 2;
   int yStart = height - ((height / 8) * 2);
-  for (int i = 1; i < 28; i++) {
-    int j = (i - 1) / 9 + 1;
-    int k = (i - 1) % 9 + 1;
+  for (int i = 0; i < 26; i++) {
+    int j;
+    float k;
+    if (i <= 9) { // first row
+      j = 1;
+      k = i;
+    } else if (i <= 18) { // second row
+      j = 2;
+      k = i - 9.5;
+    } else { // third row
+      j = 3;
+      k = i - 17.5;
+    }
     noFill();
     rect(xStart + (((width / 4) * 2 / 9) * k), yStart + (((height / 8) * 3 / 9) * j), 35, 30, 15);
     textAlign(CENTER, CENTER);
     textSize(20);
     fill(255);
-    text(vKeyBoard[i-1], xStart + (((width / 4) * 2 / 9) * k) + 35/2, yStart + (((height / 8) * 2.8 / 9) * j) + 30/2 + 2);
+    text(vKeyBoardS[i], xStart + (((width / 4) * 2 / 9) * k) + 35/2, yStart + (((height / 8) * 2.8 / 9) * j) + 30/2 + 2);
   }
+
+  noFill();
+  rect(xStart + (((width / 4) * 2 / 9) * -0.5), yStart + (((height / 8) * 3 / 9) * 3), 73, 30, 15);
+  textAlign(CENTER, CENTER);
+  textSize(18);
+  fill(255);
+  text("Enter", xStart + (((width / 4) * 2 / 9) * -0.5) + 70/2, yStart + (((height / 8) * 2.8 / 9) * 3) + 30/2 + 2);
+
+  noFill();
+  rect(xStart + (((width / 4) * 2 / 9) * 8.5), yStart + (((height / 8) * 3 / 9) * 3), 73, 30, 15);
+  textAlign(CENTER, CENTER);
+  textSize(18);
+  fill(255);
+  text("Back", xStart + (((width / 4) * 2 / 9) * 8.5) + 70/2, yStart + (((height / 8) * 2.8 / 9) * 3) + 30/2 + 2);
 }
 
 
@@ -156,35 +237,45 @@ void virtualKeyBoardchanges() {
 
   float xStart = (width - ((width / 4) * 2.3)) / 2;
   int yStart = height - ((height / 8) * 2);
-  for (int i = 1; i < 28; i++) {
-    int j = (i - 1) / 9 + 1;
-    int k = (i - 1) % 9 + 1;
+  for (int i = 0; i < 26; i++) {
+    int j;
+    float k;
+    if (i <= 9) { // first row
+      j = 1;
+      k = i;
+    } else if (i <= 18) { // second row
+      j = 2;
+      k = i - 9.5;
+    } else { // third row
+      j = 3;
+      k = i - 17.5;
+    }
 
-    if (outputF[i-1]) {
+    if (outputv[i]=="F") {
       fill(58, 58, 60, 255);
       rect(xStart + (((width / 4) * 2 / 9) * k), yStart + (((height / 8) * 3 / 9) * j), 35, 30, 15);
       textAlign(CENTER, CENTER);
       textSize(20);
       fill(255);
-      text(vKeyBoard[i-1], xStart + (((width / 4) * 2 / 9) * k) + 35/2, yStart + (((height / 8) * 2.8 / 9) * j) + 30/2 + 2);
+      text(vKeyBoardS[i], xStart + (((width / 4) * 2 / 9) * k) + 35/2, yStart + (((height / 8) * 2.8 / 9) * j) + 30/2 + 2);
     }
 
-    if (outputW[i-1]) {
+    if (outputv[i]=="W") {
       fill(181, 159, 59, 255);
       rect(xStart + (((width / 4) * 2 / 9) * k), yStart + (((height / 8) * 3 / 9) * j), 35, 30, 15);
       textAlign(CENTER, CENTER);
       textSize(20);
       fill(255);
-      text(vKeyBoard[i-1], xStart + (((width / 4) * 2 / 9) * k) + 35/2, yStart + (((height / 8) * 2.8 / 9) * j) + 30/2 + 2);
+      text(vKeyBoardS[i], xStart + (((width / 4) * 2 / 9) * k) + 35/2, yStart + (((height / 8) * 2.8 / 9) * j) + 30/2 + 2);
     }
 
-    if (outputT[i-1]) {
+    if (outputv[i]=="T") {
       fill(83, 141, 78, 255);
       rect(xStart + (((width / 4) * 2 / 9) * k), yStart + (((height / 8) * 3 / 9) * j), 35, 30, 15);
       textAlign(CENTER, CENTER);
       textSize(20);
       fill(255);
-      text(vKeyBoard[i-1], xStart + (((width / 4) * 2 / 9) * k) + 35/2, yStart + (((height / 8) * 2.8 / 9) * j) + 30/2 + 2);
+      text(vKeyBoardS[i], xStart + (((width / 4) * 2 / 9) * k) + 35/2, yStart + (((height / 8) * 2.8 / 9) * j) + 30/2 + 2);
     }
   }
 }
@@ -210,24 +301,28 @@ char[] answerChecker(String input3, String answer, char[] output) {
   for (int i = 0; i < answer.length(); i++) {
     if (input.charAt(i) == answer.charAt(i)) {
 
+  
       fill(83, 141, 78, 255);
       rect((width/(wordSize+2)) * (i+1), (((height/8)*6.5)/(wordSize+2)) * (x+1), width/grid, width/grid, 15);
       textAlign(CENTER, CENTER);
       textSize(50);
-      fill(0);
+      fill(255);
       text(input2[i].toUpperCase(), (width/grid) * (i+1) + width/grid/2, (((height/8)*6.5)/grid) * (x+1)   + width/grid/2);
 
       output[i] = 't';
 
-      for (int g = 0; g < 26; g++) {
-        if (vKeyBoard[g]==input2[i].toUpperCase()&& outputT[i]== false) {
-          outputT[g]=true;
-        }
-      }
-
+   
 
 
       alphabet[(input.charAt(i) - 97)]--;
+            
+  for (int g = 0; g < 26; g++) {
+        if (vKeyBoardC[g] == input.charAt(i)) {
+          outputv[g]="T";
+        }
+       }
+       
+       
     } else {
       output[i] = 'f';
 
@@ -235,12 +330,12 @@ char[] answerChecker(String input3, String answer, char[] output) {
       rect((width/(wordSize+2)) * (i+1), (((height/8)*6.5)/(wordSize+2)) * (x+1), width/grid, width/grid, 15);
       textAlign(CENTER, CENTER);
       textSize(50);
-      fill(0);
+      fill(255);
       text(input2[i].toUpperCase(), (width/grid) * (i+1) + width/grid/2, (((height/8)*6.5)/grid) * (x+1)   + width/grid/2);
     }
     for (int h = 0; h < 26; h++) {
-      if (vKeyBoard[h]==input2[i].toUpperCase()) {
-        outputF[h]=true;
+      if (vKeyBoardS[h]==input2[i].toUpperCase()) {
+        outputv[h]="F";
       }
     }
   }
@@ -254,12 +349,12 @@ char[] answerChecker(String input3, String answer, char[] output) {
           rect((width/(wordSize+2)) * (k+1), (((height/8)*6.5)/(wordSize+2)) * (x+1), width/grid, width/grid, 15);
           textAlign(CENTER, CENTER);
           textSize(50);
-          fill(0);
+          fill(255);
           text(input2[k].toUpperCase(), (width/grid) * (k+1) + width/grid/2, (((height/8)*6.5)/grid) * (x+1)   + width/grid/2);
           output[k] = '!';
-          for (int i = 0; i < 27; i++) {
-            if (vKeyBoard[i]==input2[k].toUpperCase() && outputW[i]== false) {
-              outputW[i]=true;
+          for (int i = 0; i < 26; i++) {
+            if (vKeyBoardS[i] == input2[k].toUpperCase()) {
+              outputv[i]="W";
             }
           }
 
