@@ -18,7 +18,7 @@ String outputv [] =new String[26];
 boolean empty [] = new boolean[26];
 int start = 0;
 PImage resetBottem;
-boolean test = false;
+boolean debug = false;
 
 
 final int MAX_TURN = 5;
@@ -47,7 +47,7 @@ void setup() {
   answer = numberSelector(words); //generate a word
 
 
-  if (test)System.out.println(answer); //test
+  if (debug)System.out.println(answer); //debug
 }
 
 void draw() {
@@ -191,7 +191,7 @@ void logic() {
       userInput += input2[k];
     }
 
-    if (checkInputValidation(userInput, answer, words) && !test ) {
+    if (checkInputValidation(userInput, words) && !debug ) {
       y=0;
       for (int i= 0 ; i<answer.length(); i++){
       fill(18, 18, 19, 255);
@@ -204,12 +204,12 @@ void logic() {
     answerChecker(userInput, answer, output);
 
     if (userInput.equals(answer)) {
-      System.out.println("You nailed it!");
+      if (debug)System.out.println("You nailed it!");
       win();
     }
 
     if (turn==(MAX_TURN)-1 && !userInput.equals(answer) ) {
-      System.out.println("You are a loser!");
+      if (debug)System.out.println("You are a loser!");
       lose();
     }
     }
@@ -332,7 +332,7 @@ void reset() {
   textSize(50);
   text("Wordle", width/2, height/24);
   answer = numberSelector(words);
-  if (test)System.out.println(answer); //test
+  if (debug)System.out.println(answer); //debug
 
   x=0;
   y=0;
@@ -419,35 +419,21 @@ char[] answerChecker(String input3, String answer, char[] output) {
       }
     }
   }
-  System.out.println(printAnswer(output));
+  if (debug)System.out.println(printAnswer(output));
   return output;
 }
 
 // method to validate the user's input and return true if it is valid or not
-boolean checkInputValidation(String input, String answer, String[] words) {
+boolean checkInputValidation(String input, String[] words) {
   boolean invalidNumber = true;
-  boolean invalidDigit = true;
-  if (!(isAtoZ(input)) || !(isWord(input, words))) {
+  if (!(isWord(input, words))) {
     System.err.println("Invalid input. Please enter a valid word!");
     return invalidNumber;
-  } else if (!(input.length() == answer.length())) {
-    System.err.printf("Invalid input. Please enter a valid %d-letter word!\n", answer.length());
-    return invalidDigit;
   } else {
     return !invalidNumber;
   }
 }
 
-boolean isAtoZ(String input) {
-  boolean atoz = true;
-  for (int i = 0; i < input.length(); i++) {
-    if (input.isEmpty() || !(input.charAt(i) > 96 && input.charAt(i) < 123)) {
-      atoz = false;
-      break;
-    }
-  }
-  return atoz;
-}
 
 String printAnswer (char[] output) {
   String print ="";
@@ -456,6 +442,7 @@ String printAnswer (char[] output) {
   }
   return print;
 }
+
 boolean isWord(String input, String[] words) {
   boolean isWords = false;
   for (int i = 0; i < words.length; i++) {
